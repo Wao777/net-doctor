@@ -1,3 +1,5 @@
+# 本工作流只做质量门禁：语法自检 + tkinter 可用性 + 判定引擎回归测试。
+# 不构建、不发布二进制产物 —— 程序产物由维护者本地打包后自行分发。
 name: CI
 
 on:
@@ -38,40 +40,3 @@ jobs:
 
       - name: 判定引擎回归测试
         run: python tests/test_diagnose.py
-
-  release:
-    name: 打包并发布 Release
-    needs: check
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: windows-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: 安装 Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
-
-      - name: 安装构建依赖
-        run: python -m pip install --upgrade pip -r requirements.txt
-
-      - name: 生成图标
-        run: python build/make_icon.py
-
-      - name: 打包单文件版
-        run: python build/build.py onefile
-
-      - name: 打包文件夹版并压缩
-        run: |
-          python build/build.py onedir
-          Compress-Archive -Path out/dist/onedir/NetDoctor/* -DestinationPath out/dist/NetDoctor-onedir.zip
-
-      - name: 发布 Release 并上传产物
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            out/dist/onefile/NetDoctor.exe
-            out/dist/NetDoctor-onedir.zip
-          generate_release_notes: true

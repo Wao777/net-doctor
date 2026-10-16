@@ -2,7 +2,8 @@
 
 > Windows 断网原因自动诊断与修复工具。**先判定当前网络是否正常、断在哪一环，再列出全部疑似原因** → 备份配置 → 一键修复 → 复测连通性 → 给出结论。
 
-无需安装：从 [Releases](../../releases) 下载 `NetDoctor.exe` 双击即用（修复类操作会请求管理员权限）。
+无需安装：从 [Releases](../../releases) 下载 `NetDoctor.exe` 双击即用（修复类操作会请求管理员权限）；
+也可以按 [打包](#打包) 一节的说明从源码自行构建。
 
 ## 它解决什么问题
 
@@ -144,7 +145,7 @@ net-doctor/
 ├── tests/                     判定引擎离线回归测试
 ├── docs/                      设计说明、判定与故障形态、检查项清单、使用说明
 │   └── images/                README 使用的界面截图
-├── .github/workflows/ci.yml   CI：语法自检 + 回归测试，打 tag 时自动打包并发布 Release
+├── .github/workflows/ci.yml   CI：语法自检 + tkinter 检查 + 回归测试（不产出二进制产物）
 ├── out/                       构建产物、报告（未入库）
 ├── requirements.txt           构建依赖（运行仅需标准库）
 ├── CHANGELOG.md               更新日志
@@ -159,14 +160,16 @@ net-doctor/
 
 ## 自动化
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) 在每次 push / PR 时执行语法自检与判定引擎
-回归测试；推送形如 `v1.2.0` 的 tag 时，自动在 Windows 环境打出单文件版与文件夹版，并挂到
-对应 Release 供下载。发版流程：
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) 在每次 push / PR / 打 tag 时执行三道质量门禁
+（Windows 环境）：
 
-```bat
-git tag v1.2.0
-git push origin v1.2.0
-```
+1. `compileall` 语法自检；
+2. 显式 `import tkinter` —— 语法检查不会导入模块，缺 tkinter 时打出的 exe 一开界面就崩，
+   所以单独确认一次；
+3. 判定引擎回归测试。
+
+工作流**不构建、不发布二进制产物**：产物由维护者按上一节 [打包](#打包) 在本地构建后自行分发。
+运行程序只需标准库，[`requirements.txt`](requirements.txt) 仅用于本地构建。
 
 ## 安全设计
 
