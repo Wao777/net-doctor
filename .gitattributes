@@ -1,0 +1,8 @@
+# 统一换行符，避免跨平台检出时产生无意义差异
+* text=auto
+
+# 二进制资源
+*.ico binary
+*.exe binary
+*.zip binary
+*.png binary

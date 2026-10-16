@@ -1,0 +1,28 @@
+# ---- 构建产物（exe 走 Release，不入库）----
+out/
+build/*.spec
+*.spec
+
+# ---- 运行期生成 ----
+logs/
+backups/
+reports/
+*.log
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# ---- 编辑器 / 系统 ----
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+
+# ---- 本地工具元数据（含本机绝对路径，不随仓库分发）----
+.workbuddy/

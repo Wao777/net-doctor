@@ -1,0 +1,5 @@
+# NetDoctor 运行时只依赖 Python 标准库（tkinter / winreg / subprocess / json 等），
+# 直接运行源码不需要安装任何第三方包。
+#
+# 下面这条是「从源码打包成 exe」时的唯一构建依赖：
+pyinstaller>=6.0

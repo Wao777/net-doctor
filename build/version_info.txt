@@ -1,0 +1,33 @@
+# UTF-8
+# NetDoctor 可执行文件版本资源（PyInstaller --version-file 使用）
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(1, 2, 0, 0),
+    prodvers=(1, 2, 0, 0),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0),
+  ),
+  kids=[
+    StringFileInfo([
+      StringTable(
+        '080404B0',
+        [
+          StringStruct('CompanyName', 'NetDoctor'),
+          StringStruct('FileDescription', '断网急救箱 - 网络故障自动诊断与修复工具'),
+          StringStruct('FileVersion', '1.2.0.0'),
+          StringStruct('InternalName', 'NetDoctor'),
+          StringStruct('LegalCopyright', 'Copyright (C) 2026 NetDoctor'),
+          StringStruct('OriginalFilename', 'NetDoctor.exe'),
+          StringStruct('ProductName', 'NetDoctor 断网急救箱'),
+          StringStruct('ProductVersion', '1.2.0.0'),
+          StringStruct('Comments', '自动排查断网原因，支持一键备份修复与回滚'),
+        ],
+      )
+    ]),
+    VarFileInfo([VarStruct('Translation', [2052, 1200])]),
+  ],
+)
