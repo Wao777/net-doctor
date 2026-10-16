@@ -46,12 +46,19 @@ NetDoctor 把「排查断网」这件事标准化：
 
 ### 图形界面（推荐给普通用户）
 
+![NetDoctor 主界面：网络健康时只做提示、不打扰](docs/images/gui-main.png)
+
 双击 `NetDoctor.exe` → 点「开始体检」→ 顶部横幅几秒内亮出**判定结论** →
 程序自动继续完整排查 → 在右侧「详情」区看结论与处理步骤，在左侧列表看全部条目 →
 勾选要处理的项目 → 点「修复所选问题」。
 
 程序会先备份配置，再执行修复，最后自动复测，结果同样直接显示在界面里（不弹窗）；
 网络健康时不会打扰你，配置类条目只以「提示」级列出。
+
+判定到真实故障时（例如「能上 QQ 却打不开网页」），界面会指出断在哪一环，并给出该形态
+专属的处理步骤与建议勾选的修复动作：
+
+![NetDoctor 判定为域名解析故障时的界面](docs/images/gui-diagnose.png)
 
 ### 命令行（任意 Windows 终端可用）
 
@@ -109,8 +116,9 @@ python build\build.py onedir     :: 只出文件夹版
 - `out/dist/onefile/NetDoctor.exe` —— 单文件，拷走即用（首次启动稍慢，部分杀软可能误报）
 - `out/dist/onedir/NetDoctor/NetDoctor.exe` —— 文件夹版，启动快、误报少，分发时需整个文件夹
 
-构建依赖：Python 3.10+ 与 `pyinstaller`（`pip install pyinstaller`）。图标由 `build/make_icon.py`
-用标准库直接生成，无需 Pillow。
+构建依赖：Python 3.10+ 与 `pyinstaller`（`pip install pyinstaller`）。
+`build/make_icon.py`（生成图标）与 `build/make_screenshot.py`（生成文档截图）都用标准库实现，
+不需要 Pillow。
 
 ## 目录结构
 
@@ -132,9 +140,10 @@ net-doctor/
 │   ├── models.py              数据模型（含 Verdict 判定结论）
 │   ├── fixids.py              修复动作 id 常量表
 │   └── util.py                命令执行 / 权限 / 日志 / 注册表 / 资源路径
-├── build/                     打包脚本、图标、版本信息
+├── build/                     打包脚本、图标与截图生成、版本信息
 ├── tests/                     判定引擎离线回归测试
 ├── docs/                      设计说明、判定与故障形态、检查项清单、使用说明
+│   └── images/                README 使用的界面截图
 ├── .github/workflows/ci.yml   CI：语法自检 + 回归测试，打 tag 时自动打包并发布 Release
 ├── out/                       构建产物、报告（未入库）
 ├── requirements.txt           构建依赖（运行仅需标准库）
@@ -170,13 +179,13 @@ git push origin v1.2.0
 
 ## 已知限制
 
-- 仅支持 Windows（已在 Windows 10 21H2 上验证）。
+- 仅支持 Windows 10 / 11 及以上版本。
 - 「网络状态采集」优先使用 PowerShell 的 `NetTCPIP` 模块；在缺少该模块的老系统上自动降级为 `netsh` 文本解析。
 - 部分检测项（如上网行为管理、802.1X 准入认证、运营商侧故障）无法从本机判定，工具会明确提示需联系专业人员。
 - 判定引擎需要 TCP 443 / HTTP 两层探针参与；`--fast` 模式虽然跳过了一些慢速检查项，但仍会执行这两层（否则无法区分「只有浏览器上不去」与「全断」）。
 - 未经代码签名时，个别杀毒软件可能对 PyInstaller 产物误报，建议使用文件夹版或自行签名。
 - 重新打包前请确认没有正在运行的 `NetDoctor.exe`，否则产物目录被占用会打包失败。
-- 打包脚本把旧的 `onedir` 产物移入 `out/_trash` 而不是直接删除（本机环境对单次批量删除有保护）。
+- 打包脚本把旧的 `onedir` 产物移入 `out/_trash` 而不是直接删除（避免误删难以恢复）。
   该目录可随时手动删除。
 
 ## 文档

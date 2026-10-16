@@ -1,7 +1,7 @@
 # 更新日志
 
 本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/)：`主版本.次版本.修订号`。
-各版本的安装包见 [Releases](https://github.com/Wao777/net-doctor/releases)。
+各版本的安装包见 [Releases](../../releases)。
 
 ## 1.2.0 - 2026-10-16
 

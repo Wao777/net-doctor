@@ -26,7 +26,7 @@ def P(local=True, gw=True, pub=True, dns=True, tcp=True, http=True,
     return out
 
 
-HOSTS_INFO = Finding("C.hosts", "C", "DNS", "hosts 文件存在 22 条自定义解析记录",
+HOSTS_INFO = Finding("C.hosts", "C", "DNS", "hosts 文件存在 30 条自定义解析记录",
                      "", Severity.INFO, fix_id="fix.hosts.restore")
 POWER_INFO = Finding("I.powersave", "I", "系统环境", "网卡启用了节能断流",
                      "", Severity.INFO, fix_id="fix.powersave.off")
@@ -34,9 +34,9 @@ POWER_INFO = Finding("I.powersave", "I", "系统环境", "网卡启用了节能�
 CASES = [
     # ---- 实测正常：配置类检出不上抬健康度 ----
     ("全通 + 无检出", P(), {}, None, "normal", "normal"),
-    ("全通 + hosts 22 条（提示级）", P(), {"hosts_count": 22},
+    ("全通 + hosts 30 条（提示级）", P(), {"hosts_count": 30},
      [HOSTS_INFO], "normal", "normal"),
-    ("全通 + hosts + 节能（提示级）", P(), {"hosts_count": 22,
+    ("全通 + hosts + 节能（提示级）", P(), {"hosts_count": 30,
                                         "powersave": ["以太网"]},
      [HOSTS_INFO, POWER_INFO], "normal", "normal"),
     ("全通 + 代理正常", P(browse=True), {"proxy_on": True}, None, "normal", "normal"),
@@ -58,7 +58,7 @@ CASES = [
     ("应用层异常", P(dns=True, tcp=True, http=False), {}, None, "app", "limited"),
     # ---- 断网时，配置类检出要正常参与（不能只当提示）----
     ("断网 + 有 C.hosts 记录", P(pub=False, tcp=False, http=False),
-     {"hosts_count": 22},
+     {"hosts_count": 30},
      [Finding("C.hosts", "C", "DNS", "hosts 记录", "", Severity.MEDIUM,
               fix_id="fix.hosts.restore")],
      "wan", "down"),
@@ -74,7 +74,7 @@ for name, probes, ctx, findings, want_fault, want_level in CASES:
           f" (期望 {want_fault}/{want_level})  修复项={v.fix_ids}")
 
 # ---- 提示级条目要被写进结论，但不得影响健康度 ----
-v = D.judge(P(), [HOSTS_INFO], {"hosts_count": 22})
+v = D.judge(P(), [HOSTS_INFO], {"hosts_count": 30})
 joined = "\n".join(v.steps)
 checks = [
     ("实测正常时健康度为 normal", v.level.key == "normal"),
@@ -90,6 +90,6 @@ for label, ok in checks:
 # ---- 修复项挑选：DNS 故障时若已检出 hosts 问题，应优先勾选该动作 ----
 v = D.judge(P(pub=True, dns=False, tcp=False, http=False),
             [Finding("C.hosts", "C", "DNS", "hosts 记录", "", Severity.MEDIUM,
-                     fix_id="fix.hosts.restore")], {"hosts_count": 22})
+                     fix_id="fix.hosts.restore")], {"hosts_count": 30})
 print("\nDNS 故障 + 检出 hosts：修复项 =", v.fix_ids)
 print("结论：", "全部通过" if fails == 0 else f"{fails} 项不符合预期")
