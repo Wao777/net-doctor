@@ -8,6 +8,13 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+# Windows runner 上 Python 的标准输出被重定向到文件时，编码会退化成系统 ANSI
+# 代码页（cp1252），一旦 print 中文就抛 UnicodeEncodeError 让步骤直接失败。
+# 统一开启 UTF-8 模式：回归测试与 build.py 的日志里都有中文，必须在这里兜住。
+env:
+  PYTHONUTF8: "1"
+  PYTHONIOENCODING: "utf-8"
+
 jobs:
   check:
     name: 语法自检与回归测试
